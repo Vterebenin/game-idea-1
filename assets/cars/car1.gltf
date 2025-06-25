@@ -25,17 +25,7 @@
 				]
 			},
 			"mesh":0,
-			"name":"Car1",
-			"scale":[
-				1.075137972831726,
-				0.5013424158096313,
-				1.5900572538375854
-			],
-			"translation":[
-				3.356417655944824,
-				3.3324952125549316,
-				-0.8955975770950317
-			]
+			"name":"Car1"
 		},
 		{
 			"extras":{
@@ -51,9 +41,9 @@
 			"name":"Material",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
-					0.800000011920929,
-					0.800000011920929,
-					0.800000011920929,
+					0.8005679845809937,
+					0.15480510890483856,
+					0.1952895224094391,
 					1
 				],
 				"metallicFactor":0,
@@ -63,6 +53,16 @@
 	],
 	"meshes":[
 		{
+			"extras":{
+				"skein":[
+					{
+						"avian3d::collision::collider::constructor::ColliderConstructor":"TrimeshFromMesh"
+					},
+					{
+						"avian3d::dynamics::rigid_body::RigidBody":"Dynamic"
+					}
+				]
+			},
 			"name":"Cube",
 			"primitives":[
 				{
@@ -106,14 +106,14 @@
 			"componentType":5126,
 			"count":24,
 			"max":[
-				1,
-				2,
-				1
+				4.43155574798584,
+				4.335180282592773,
+				0.6944596767425537
 			],
 			"min":[
-				-1,
-				0,
-				-1
+				2.2812795639038086,
+				3.3324952125549316,
+				-2.485654830932617
 			],
 			"type":"VEC3"
 		},
