@@ -1,12 +1,6 @@
 use avian3d::prelude::*;
-use bevy::{prelude::*, scene::SceneInstanceReady};
+use bevy::{gltf::GltfMesh, prelude::*, scene::SceneInstanceReady};
 use bevy_skein::SkeinPlugin;
-
-fn on_add_test_subject(trigger: Trigger<OnAdd, TestSubject>, mut commands: Commands) {
-    commands
-        .entity(trigger.target())
-        .insert((Collider::cylinder(4.0, 0.1), RigidBody::Static));
-}
 
 fn on_add_character(trigger: Trigger<OnAdd, Character>, mut commands: Commands) {
     commands.entity(trigger.target()).insert((
@@ -19,14 +13,13 @@ fn on_add_character(trigger: Trigger<OnAdd, Character>, mut commands: Commands) 
 fn main() {
     App::new()
         .register_type::<Character>()
-        .register_type::<TestSubject>()
+        .register_type::<AutoCollider>()
         .add_plugins((
             DefaultPlugins,
             SkeinPlugin::default(),
             PhysicsPlugins::default(),
             PhysicsDebugPlugin::default(),
         ))
-        .add_observer(on_add_test_subject)
         .add_observer(on_add_character)
         .add_observer(
             // log the component from the gltf spawn
@@ -53,7 +46,7 @@ struct Character {
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct TestSubject;
+struct AutoCollider;
 
 fn startup(
     mut commands: Commands,
@@ -80,33 +73,4 @@ fn startup(
         Camera3d::default(),
         Transform::from_xyz(-2.5, 4.5, 9.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
-    // Static physics object with a collision shape
-    // commands.spawn((
-    //     RigidBody::Static,
-    //     Collider::cylinder(4.0, 0.1),
-    //     Mesh3d(meshes.add(Cylinder::new(4.0, 0.1))),
-    //     MeshMaterial3d(materials.add(Color::WHITE)),
-    // ));
-
-    // // Dynamic physics object with a collision shape and initial angular velocity
-    // commands.spawn((
-    //     Mesh3d(meshes.add(Cuboid::from_length(1.0))),
-    //     MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
-    //     Transform::from_xyz(0.0, 4.0, 0.0),
-    // ));
-
-    // // Light
-    // commands.spawn((
-    //     PointLight {
-    //         shadows_enabled: true,
-    //         ..default()
-    //     },
-    //     Transform::from_xyz(4.0, 8.0, 4.0),
-    // ));
-
-    // // Camera
-    // commands.spawn((
-    //     Camera3d::default(),
-    //     Transform::from_xyz(-2.5, 4.5, 9.0).looking_at(Vec3::ZERO, Dir3::Y),
-    // ));
 }

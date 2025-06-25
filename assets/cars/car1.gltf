@@ -32,31 +32,17 @@
 				1.5900572538375854
 			],
 			"translation":[
-				0,
-				2.9950075149536133,
-				0
+				3.356417655944824,
+				3.3324952125549316,
+				-0.8955975770950317
 			]
 		},
 		{
 			"extras":{
-				"skein":[
-					{
-						"case_one::TestSubject":{}
-					}
-				]
+				"skein":[]
 			},
 			"mesh":1,
-			"name":"static_test",
-			"scale":[
-				0.4561375379562378,
-				0.4561375379562378,
-				0.4561375379562378
-			],
-			"translation":[
-				0,
-				0.512143611907959,
-				0
-			]
+			"name":"static_test"
 		}
 	],
 	"materials":[
@@ -91,6 +77,16 @@
 			]
 		},
 		{
+			"extras":{
+				"skein":[
+					{
+						"avian3d::dynamics::rigid_body::RigidBody":"Static"
+					},
+					{
+						"avian3d::collision::collider::constructor::ColliderConstructor":"TrimeshFromMesh"
+					}
+				]
+			},
 			"name":"Cube.001",
 			"primitives":[
 				{
@@ -144,14 +140,14 @@
 			"componentType":5126,
 			"count":24,
 			"max":[
-				1,
-				1,
-				1
+				5.722126483917236,
+				-0.12932297587394714,
+				5.689901351928711
 			],
 			"min":[
-				-1,
-				-1,
-				-1
+				-5.722126483917236,
+				-0.30742207169532776,
+				-5.689901351928711
 			],
 			"type":"VEC3"
 		},
