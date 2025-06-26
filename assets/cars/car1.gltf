@@ -42,11 +42,6 @@
 			"extras":{
 				"skein":[
 					{
-						"case_one::Character":{
-							"name":"Its a car, man"
-						}
-					},
-					{
 						"avian3d::dynamics::rigid_body::LinearVelocity":[
 							0.0,
 							0.0,
@@ -72,6 +67,11 @@
 								0.0
 							]
 						}
+					},
+					{
+						"case_one::plugins::character::Character":{
+							"name":""
+						}
 					}
 				]
 			},
@@ -90,7 +90,7 @@
 			"extras":{
 				"skein":[
 					{
-						"case_one::UseCameraMark":{}
+						"case_one::plugins::camera::UseCameraMark":{}
 					}
 				]
 			},
@@ -115,10 +115,10 @@
 			},
 			"name":"Light",
 			"rotation":[
-				-0.28416627645492554,
-				0.7269423007965088,
-				0.34203392267227173,
-				0.5232754945755005
+				-0.3435150980949402,
+				0.6674264669418335,
+				0.4380650818347931,
+				0.4946092963218689
 			],
 			"translation":[
 				-1.0301547050476074,
