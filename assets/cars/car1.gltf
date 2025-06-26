@@ -3,13 +3,37 @@
 		"generator":"Khronos glTF Blender I/O v4.2.83",
 		"version":"2.0"
 	},
+	"extensionsUsed":[
+		"KHR_lights_punctual"
+	],
+	"extensionsRequired":[
+		"KHR_lights_punctual"
+	],
+	"extensions":{
+		"KHR_lights_punctual":{
+			"lights":[
+				{
+					"color":[
+						1,
+						1,
+						1
+					],
+					"intensity":1236.2299609184265,
+					"type":"directional",
+					"name":"Light"
+				}
+			]
+		}
+	},
 	"scene":0,
 	"scenes":[
 		{
 			"name":"Scene",
 			"nodes":[
 				0,
-				1
+				1,
+				2,
+				3
 			]
 		}
 	],
@@ -20,6 +44,33 @@
 					{
 						"case_one::Character":{
 							"name":"Its a car, man"
+						}
+					},
+					{
+						"avian3d::dynamics::rigid_body::LinearVelocity":[
+							0.0,
+							0.0,
+							0.0
+						]
+					},
+					{
+						"bevy_transform::components::transform::Transform":{
+							"rotation":[
+								0.0,
+								0.0,
+								0.0,
+								1.0
+							],
+							"scale":[
+								1.0,
+								1.0,
+								1.0
+							],
+							"translation":[
+								0.0,
+								0.0,
+								0.0
+							]
 						}
 					}
 				]
@@ -33,6 +84,59 @@
 			},
 			"mesh":1,
 			"name":"static_test"
+		},
+		{
+			"camera":0,
+			"extras":{
+				"skein":[
+					{
+						"case_one::UseCameraMark":{}
+					}
+				]
+			},
+			"name":"Camera",
+			"rotation":[
+				-0.20997299253940582,
+				0.3857799470424652,
+				0.09062844514846802,
+				0.8937962055206299
+			],
+			"translation":[
+				7.358891487121582,
+				4.958309173583984,
+				6.925790786743164
+			]
+		},
+		{
+			"extensions":{
+				"KHR_lights_punctual":{
+					"light":0
+				}
+			},
+			"name":"Light",
+			"rotation":[
+				-0.28416627645492554,
+				0.7269423007965088,
+				0.34203392267227173,
+				0.5232754945755005
+			],
+			"translation":[
+				-1.0301547050476074,
+				8.867354393005371,
+				-1.0054539442062378
+			]
+		}
+	],
+	"cameras":[
+		{
+			"name":"Camera",
+			"perspective":{
+				"aspectRatio":1.7777777777777777,
+				"yfov":0.39959652046304894,
+				"zfar":100,
+				"znear":0.10000000149011612
+			},
+			"type":"perspective"
 		}
 	],
 	"materials":[
