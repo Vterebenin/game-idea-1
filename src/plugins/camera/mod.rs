@@ -4,6 +4,8 @@ use bevy::{
     prelude::*,
 };
 
+use crate::plugins::character;
+
 use super::character::Character;
 
 const MIN_PITCH: f32 = -89.0f32.to_radians();
@@ -36,7 +38,10 @@ struct PlayerCameraFix {
 type WithCameraTarget = (With<CameraTarget>, Without<Camera>, Without<Character>);
 type WithCamera = (With<Camera>, Without<Character>);
 
-fn on_add_camera_mark(trigger: Trigger<OnAdd, UseCameraMark>, mut commands: Commands) {
+fn on_add_camera_mark(
+    trigger: Trigger<OnAdd, UseCameraMark>,
+    mut commands: Commands,
+) {
     commands.entity(trigger.target()).insert((
         Camera3d::default(),
         PlayerCameraFix {
@@ -92,7 +97,7 @@ fn rotate_camera(
     // TODO: probably i can create some
     // sort of aiming based on this offset to the side
     // plus playing a bit with current fov
-    const SHOULDER_OFFSET: Vec3 = Vec3::new(0., 1., 0.);
+    const SHOULDER_OFFSET: Vec3 = Vec3::new(0., 0., 0.);
     let player_translation =
         player_transform.translation + player_transform.rotation * SHOULDER_OFFSET;
 
@@ -102,23 +107,23 @@ fn rotate_camera(
     let query_filter = SpatialQueryFilter::from_mask(0b1011).with_excluded_entities([player_id]);
 
     // shape cast if camera clipping on colliders
-    if let Ok(direction) = Dir3::new(direction.normalize()) {
-        if let Some(hit) = physics.cast_shape(
-            &Collider::sphere(0.5),
-            player_translation,
-            Quat::IDENTITY,
-            direction,
-            &ShapeCastConfig {
-                max_distance: camera.distance,
-                target_distance: 0.,
-                ignore_origin_penetration: true,
-                ..Default::default()
-            },
-            &query_filter,
-        ) {
-            desired_position = player_translation + direction * (hit.distance - 0.1);
-        }
-    }
+    // if let Ok(direction) = Dir3::new(direction.normalize()) {
+    //     if let Some(hit) = physics.cast_shape(
+    //         &Collider::sphere(0.5),
+    //         player_translation,
+    //         Quat::IDENTITY,
+    //         direction,
+    //         &ShapeCastConfig {
+    //             max_distance: camera.distance,
+    //             target_distance: 0.,
+    //             ignore_origin_penetration: true,
+    //             ..Default::default()
+    //         },
+    //         &query_filter,
+    //     ) {
+    //         desired_position = player_translation + direction * (hit.distance - 0.1);
+    //     }
+    // }
 
     camera_transform.translation = desired_position;
     let mut camera_target = camera_target_q.single_mut().unwrap();

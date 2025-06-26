@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.2.83",
+		"generator":"Khronos glTF Blender I/O v4.4.56",
 		"version":"2.0"
 	},
 	"extensionsUsed":[
@@ -28,7 +28,7 @@
 	"scene":0,
 	"scenes":[
 		{
-			"name":"Scene",
+			"name":"exports",
 			"nodes":[
 				0,
 				1,
@@ -40,43 +40,15 @@
 	"nodes":[
 		{
 			"extras":{
-				"skein":[
-					{
-						"avian3d::dynamics::rigid_body::LinearVelocity":[
-							0.0,
-							0.0,
-							0.0
-						]
-					},
-					{
-						"bevy_transform::components::transform::Transform":{
-							"rotation":[
-								0.0,
-								0.0,
-								0.0,
-								1.0
-							],
-							"scale":[
-								1.0,
-								1.0,
-								1.0
-							],
-							"translation":[
-								0.0,
-								0.0,
-								0.0
-							]
-						}
-					},
-					{
-						"case_one::plugins::character::Character":{
-							"name":""
-						}
-					}
-				]
+				"skein":[]
 			},
 			"mesh":0,
-			"name":"Car1"
+			"name":"Car1",
+			"translation":[
+				3.356417655944824,
+				1.5364230871200562,
+				-0.895597517490387
+			]
 		},
 		{
 			"extras":{
@@ -164,6 +136,35 @@
 					},
 					{
 						"avian3d::dynamics::rigid_body::RigidBody":"Dynamic"
+					},
+					{
+						"case_one::plugins::character::Character":{
+							"ride_damper":20.0,
+							"ride_height":1.600000023841858,
+							"ride_strength":100.0
+						}
+					},
+					{
+						"avian3d::dynamics::rigid_body::forces::ExternalForce":{
+							"force":[
+								0.0,
+								0.0,
+								0.0
+							],
+							"persistent":false,
+							"torque":[
+								0.0,
+								0.0,
+								0.0
+							]
+						}
+					},
+					{
+						"avian3d::dynamics::rigid_body::LinearVelocity":[
+							0.0,
+							0.0,
+							0.0
+						]
 					}
 				]
 			},
@@ -210,14 +211,14 @@
 			"componentType":5126,
 			"count":24,
 			"max":[
-				4.43155574798584,
-				4.335180282592773,
-				0.6944596767425537
+				1.0751380920410156,
+				1.0026850700378418,
+				1.590057134628296
 			],
 			"min":[
-				2.2812795639038086,
-				3.3324952125549316,
-				-2.485654830932617
+				-1.0751380920410156,
+				0,
+				-1.590057373046875
 			],
 			"type":"VEC3"
 		},
