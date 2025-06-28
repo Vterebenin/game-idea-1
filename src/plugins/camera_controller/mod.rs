@@ -45,7 +45,6 @@ fn on_add_camera_mark(
     mut commands: Commands,
     character_q: Query<&Transform, With<CharacterObject>>,
 ) {
-    println!("123qwe");
     let character_transform = character_q.single().unwrap();
     let camera_entity = camera_q.single().unwrap();
 

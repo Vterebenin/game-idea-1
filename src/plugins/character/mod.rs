@@ -8,6 +8,8 @@ impl Plugin for CharacterPlugin {
         app.register_type::<CharacterObject>()
             .register_type::<CharacterMesh>()
             .register_type::<SceneItem>()
+            .register_type::<CharacterSpawner>()
+            .add_observer(on_add_character)
             .add_systems(Update, move_me_baby)
             .add_systems(Update, log_transform_of_scene_items);
     }
@@ -16,6 +18,10 @@ impl Plugin for CharacterPlugin {
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 pub struct SceneItem;
+
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+pub struct CharacterSpawner;
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
@@ -62,6 +68,7 @@ fn move_me_baby(
         velocity.0.z += 0.1
     }
 }
+
 fn log_transform_of_scene_items(
     mut commands: Commands,
     scene_items_q: Query<Entity, With<SceneItem>>,
@@ -69,4 +76,12 @@ fn log_transform_of_scene_items(
     for scene_item in scene_items_q.iter() {
         // commands.get_entity(scene_item).unwrap().log_components();
     }
+}
+
+fn on_add_character(
+    _trigger: Trigger<OnAdd, CharacterMesh>,
+    spawner_transform: Single<&Transform, (With<CharacterSpawner>, Without<CharacterMesh>)>,
+    mut character_transform: Single<&mut Transform, (With<CharacterMesh>, Without<CharacterSpawner>)>,
+) {
+    character_transform.translation = spawner_transform.translation
 }

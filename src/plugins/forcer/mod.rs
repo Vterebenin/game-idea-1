@@ -1,7 +1,7 @@
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
-use bevy::color::palettes::css::{PINK, PURPLE, RED};
+use bevy::color::palettes::css::{BLUE, PINK, PURPLE, RED};
 
 use super::character::CharacterMesh;
 
@@ -102,10 +102,14 @@ fn compute_spring_force(
     let penetration =
         (player.ride_height + height_buffer - hit_distance).clamp(0.0, player.ride_height);
 
-    let x = hit_distance - player.ride_height;
+    let offset = hit_distance - player.ride_height;
     let relative_velocity = velocity.dot(*Dir3::NEG_Y);
 
-    let spring_force = (x * player.ride_strength) - (relative_velocity * player.ride_damper);
+    let spring_force = (offset * player.ride_strength) - (relative_velocity * player.ride_damper);
+    println!(
+        "off: {} str: {} vel: {} damper: {} result: {}",
+        offset, player.ride_strength, relative_velocity, player.ride_damper, spring_force
+    );
 
     (spring_force, penetration)
 }
@@ -148,5 +152,5 @@ fn apply_impulse_to_object(
 }
 
 fn debug_draw_gizmos(gizmos: &mut Gizmos, origin: Vec3, direction: Dir3, max_distance: f32) {
-    gizmos.line(origin, origin + direction * max_distance, RED);
+    gizmos.line(origin, origin + direction * max_distance, BLUE);
 }
