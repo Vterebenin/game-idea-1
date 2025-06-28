@@ -3,7 +3,7 @@ use bevy::prelude::*;
 
 use bevy::color::palettes::css::{PINK, PURPLE, RED};
 
-use super::character::Character;
+use super::character::CharacterMesh;
 
 pub struct ForcerPlugin;
 
@@ -40,10 +40,10 @@ fn apply_spring_force(
         &Transform,
         &mut ExternalForce,
         &mut LinearVelocity,
-        &mut Character,
+        &mut CharacterMesh,
         Entity,
     )>,
-    objects_q: Query<&Transform, Without<Character>>,
+    objects_q: Query<&Transform, Without<CharacterMesh>>,
     physics: SpatialQuery,
     mut gizmos: Gizmos,
 ) {
@@ -94,7 +94,7 @@ fn apply_spring_force(
 }
 
 fn compute_spring_force(
-    player: &Character,
+    player: &CharacterMesh,
     velocity: &LinearVelocity,
     hit_distance: f32,
     height_buffer: f32,
@@ -125,7 +125,7 @@ fn handle_grounded_state(
 
 fn apply_impulse_to_object(
     commands: &mut Commands,
-    objects_q: &Query<&Transform, Without<Character>>,
+    objects_q: &Query<&Transform, Without<CharacterMesh>>,
     hit_entity: Entity,
     origin: Vec3,
     down_direction: Dir3,

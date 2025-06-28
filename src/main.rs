@@ -2,7 +2,7 @@ use avian3d::prelude::*;
 use bevy::prelude::*;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 use bevy_skein::SkeinPlugin;
-use plugins::{camera::CameraPlugin, character::CharacterPlugin, forcer::ForcerPlugin};
+use plugins::{camera_controller::CameraControllerPlugin, character::CharacterPlugin, forcer::ForcerPlugin};
 mod plugins;
 
 fn main() {
@@ -16,7 +16,7 @@ fn main() {
         },
         WorldInspectorPlugin::new(),
     );
-    let list_of_custom_plugins = (CameraPlugin, CharacterPlugin, ForcerPlugin);
+    let list_of_custom_plugins = (CameraControllerPlugin, CharacterPlugin, ForcerPlugin);
 
     App::new()
         .add_plugins(list_of_external_plugins)
