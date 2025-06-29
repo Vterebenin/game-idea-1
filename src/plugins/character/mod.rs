@@ -31,7 +31,7 @@ pub struct CharacterObject;
 #[derive(Component, Reflect, Debug, Default)]
 #[reflect(Component, Default)]
 pub struct Tire {
-    relative_position: Vec3
+    pub relative_position: Vec3
 }
 
 #[derive(Component, Reflect, Debug)]
