@@ -30,12 +30,7 @@
 		{
 			"name":"Scene World",
 			"nodes":[
-				0,
-				1,
-				2,
-				3,
-				5,
-				6
+				13
 			]
 		}
 	],
@@ -96,12 +91,11 @@
 				"skein":[]
 			},
 			"mesh":0,
-			"name":"static_test",
-			"translation":[
-				0.037213586270809174,
-				-0.502383291721344,
-				0
-			]
+			"name":"static_test"
+		},
+		{
+			"mesh":1,
+			"name":"tire1"
 		},
 		{
 			"extras":{
@@ -109,22 +103,31 @@
 				"active_component_index":0,
 				"skein":[]
 			},
-			"mesh":1,
-			"name":"Car1"
+			"mesh":2,
+			"name":"tire2"
 		},
 		{
-			"name":"Bone"
+			"mesh":3,
+			"name":"tire3"
+		},
+		{
+			"mesh":4,
+			"name":"tire4"
 		},
 		{
 			"children":[
-				4
+				3,
+				4,
+				5,
+				6
 			],
-			"name":"Armature",
-			"translation":[
-				-2.2176294326782227,
-				1.7894703149795532,
-				0.4425281584262848
-			]
+			"extras":{
+				"skein_two":[],
+				"active_component_index":0,
+				"skein":[]
+			},
+			"mesh":5,
+			"name":"car"
 		},
 		{
 			"extras":{
@@ -143,10 +146,56 @@
 			},
 			"name":"Empty",
 			"translation":[
-				3.8643038272857666,
-				3.506329298019409,
-				0
+				17.22705841064453,
+				4.843234062194824,
+				2.998178005218506
 			]
+		},
+		{
+			"name":"tire2_placement",
+			"translation":[
+				0.823592483997345,
+				-0.3197523355484009,
+				0.5756548047065735
+			]
+		},
+		{
+			"name":"tire1_placement",
+			"translation":[
+				0.823592483997345,
+				-0.31975245475769043,
+				-0.5756548047065735
+			]
+		},
+		{
+			"name":"tire4_placement",
+			"translation":[
+				-0.8516727685928345,
+				-0.31975245475769043,
+				-0.5756548047065735
+			]
+		},
+		{
+			"name":"tire3_placement",
+			"translation":[
+				-0.8516727685928345,
+				-0.3197523355484009,
+				0.5756548047065735
+			]
+		},
+		{
+			"children":[
+				0,
+				1,
+				2,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12
+			],
+			"name":"Scene World"
 		}
 	],
 	"cameras":[
@@ -164,8 +213,27 @@
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"Material.001",
+			"name":"Material",
 			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.6767935752868652,
+					0.13545292615890503,
+					0.13804441690444946,
+					1
+				],
+				"metallicFactor":0.6296296119689941
+			}
+		},
+		{
+			"doubleSided":true,
+			"name":"car_placeholder.001",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.0069921063259243965,
+					0.16897884011268616,
+					0.002411333378404379,
+					1
+				],
 				"metallicFactor":0,
 				"roughnessFactor":0.5
 			}
@@ -268,7 +336,168 @@
 						"TEXCOORD_0":2,
 						"TANGENT":3
 					},
-					"indices":4
+					"indices":4,
+					"material":0
+				}
+			]
+		},
+		{
+			"extras":{
+				"skein_two":[
+					{
+						"name":"Tire",
+						"selected_type_path":"case_one::plugins::character::Tire",
+						"case_one::plugins::character::Tire":{
+							"relative_position":{
+								"x":0.823592483997345,
+								"y":-0.31975245475769043,
+								"z":0.5756548047065735
+							}
+						}
+					}
+				],
+				"active_component_index":0,
+				"skein":[
+					{
+						"case_one::plugins::character::Tire":{
+							"relative_position":[
+								0.823592483997345,
+								-0.31975245475769043,
+								0.5756548047065735
+							]
+						}
+					}
+				]
+			},
+			"name":"Cylinder.004",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":5,
+						"NORMAL":6,
+						"TEXCOORD_0":7
+					},
+					"indices":8
+				}
+			]
+		},
+		{
+			"extras":{
+				"skein_two":[
+					{
+						"name":"Tire",
+						"selected_type_path":"case_one::plugins::character::Tire",
+						"case_one::plugins::character::Tire":{
+							"relative_position":{
+								"x":0.823592483997345,
+								"y":-0.3197523355484009,
+								"z":-0.5756548047065735
+							}
+						}
+					}
+				],
+				"active_component_index":0,
+				"skein":[
+					{
+						"case_one::plugins::character::Tire":{
+							"relative_position":[
+								0.823592483997345,
+								-0.3197523355484009,
+								-0.5756548047065735
+							]
+						}
+					}
+				]
+			},
+			"name":"Cylinder.001",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":9,
+						"NORMAL":10,
+						"TEXCOORD_0":11
+					},
+					"indices":8
+				}
+			]
+		},
+		{
+			"extras":{
+				"skein_two":[
+					{
+						"name":"Tire",
+						"selected_type_path":"case_one::plugins::character::Tire",
+						"case_one::plugins::character::Tire":{
+							"relative_position":{
+								"x":-0.8516727685928345,
+								"y":-0.3197523355484009,
+								"z":-0.5756548047065735
+							}
+						}
+					}
+				],
+				"active_component_index":0,
+				"skein":[
+					{
+						"case_one::plugins::character::Tire":{
+							"relative_position":[
+								-0.8516727685928345,
+								-0.3197523355484009,
+								-0.5756548047065735
+							]
+						}
+					}
+				]
+			},
+			"name":"Cylinder.003",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":12,
+						"NORMAL":13,
+						"TEXCOORD_0":14
+					},
+					"indices":15
+				}
+			]
+		},
+		{
+			"extras":{
+				"skein_two":[
+					{
+						"name":"Tire",
+						"selected_type_path":"case_one::plugins::character::Tire",
+						"case_one::plugins::character::Tire":{
+							"relative_position":{
+								"x":-0.8516727685928345,
+								"y":-0.31975245475769043,
+								"z":0.5756548047065735
+							}
+						}
+					}
+				],
+				"active_component_index":0,
+				"skein":[
+					{
+						"case_one::plugins::character::Tire":{
+							"relative_position":[
+								-0.8516727685928345,
+								-0.31975245475769043,
+								0.5756548047065735
+							]
+						}
+					}
+				]
+			},
+			"name":"Cylinder",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":16,
+						"NORMAL":17,
+						"TEXCOORD_0":18
+					},
+					"indices":19
 				}
 			]
 		},
@@ -395,6 +624,16 @@
 						"avian3d::dynamics::rigid_body::forces::ExternalForce":{
 							"force":{},
 							"torque":{}
+						},
+						"bevy_transform::components::transform::Transform":{
+							"translation":{
+								"z":0.0,
+								"x":0.0,
+								"y":0.0
+							},
+							"scale":{
+								"x":1.0
+							}
 						}
 					},
 					{
@@ -402,6 +641,13 @@
 						"selected_type_path":"avian3d::dynamics::rigid_body::physics_material::Friction",
 						"avian3d::dynamics::rigid_body::physics_material::Friction":{
 							"combine_rule":2
+						},
+						"bevy_transform::components::transform::Transform":{
+							"translation":{
+								"z":0.0,
+								"x":0.0,
+								"y":0.0
+							}
 						}
 					},
 					{
@@ -471,24 +717,15 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":5,
-						"NORMAL":6,
-						"TEXCOORD_0":7,
-						"TANGENT":8
+						"POSITION":20,
+						"NORMAL":21,
+						"TEXCOORD_0":22,
+						"TANGENT":23
 					},
 					"indices":4,
-					"material":0
+					"material":1
 				}
 			]
-		}
-	],
-	"skins":[
-		{
-			"inverseBindMatrices":9,
-			"joints":[
-				4
-			],
-			"name":"Armature"
 		}
 	],
 	"accessors":[
@@ -497,14 +734,14 @@
 			"componentType":5126,
 			"count":24,
 			"max":[
-				10.82038688659668,
-				-0.12932297587394714,
-				5.689901351928711
+				53.04253387451172,
+				-0.6064052581787109,
+				23.307838439941406
 			],
 			"min":[
-				-0.623866081237793,
-				-0.30742207169532776,
-				-5.689901351928711
+				6.162845611572266,
+				-1.3359618186950684,
+				-23.307838439941406
 			],
 			"type":"VEC3"
 		},
@@ -535,6 +772,136 @@
 		{
 			"bufferView":5,
 			"componentType":5126,
+			"count":192,
+			"max":[
+				0.17281128466129303,
+				0.17281126976013184,
+				0.010801553726196289
+			],
+			"min":[
+				-0.17281125485897064,
+				-0.17281126976013184,
+				-0.010801553726196289
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":6,
+			"componentType":5126,
+			"count":192,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":7,
+			"componentType":5126,
+			"count":192,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":8,
+			"componentType":5123,
+			"count":372,
+			"type":"SCALAR"
+		},
+		{
+			"bufferView":9,
+			"componentType":5126,
+			"count":192,
+			"max":[
+				0.17281115055084229,
+				0.17281121015548706,
+				0.01080179214477539
+			],
+			"min":[
+				-0.1728113889694214,
+				-0.1728113293647766,
+				-0.010801315307617188
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":10,
+			"componentType":5126,
+			"count":192,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":11,
+			"componentType":5126,
+			"count":192,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":12,
+			"componentType":5126,
+			"count":192,
+			"max":[
+				0.17281122505664825,
+				0.17281126976013184,
+				0.010801553726196289
+			],
+			"min":[
+				-0.17281131446361542,
+				-0.17281128466129303,
+				-0.010801553726196289
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":13,
+			"componentType":5126,
+			"count":192,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":14,
+			"componentType":5126,
+			"count":192,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":15,
+			"componentType":5123,
+			"count":372,
+			"type":"SCALAR"
+		},
+		{
+			"bufferView":16,
+			"componentType":5126,
+			"count":192,
+			"max":[
+				0.17281150817871094,
+				0.17281121015548706,
+				0.010801553726196289
+			],
+			"min":[
+				-0.17281103134155273,
+				-0.1728113293647766,
+				-0.010801553726196289
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":17,
+			"componentType":5126,
+			"count":192,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":18,
+			"componentType":5126,
+			"count":192,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":19,
+			"componentType":5123,
+			"count":372,
+			"type":"SCALAR"
+		},
+		{
+			"bufferView":20,
+			"componentType":5126,
 			"count":24,
 			"max":[
 				1.0911448001861572,
@@ -549,28 +916,22 @@
 			"type":"VEC3"
 		},
 		{
-			"bufferView":6,
+			"bufferView":21,
 			"componentType":5126,
 			"count":24,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":7,
+			"bufferView":22,
 			"componentType":5126,
 			"count":24,
 			"type":"VEC2"
 		},
 		{
-			"bufferView":8,
+			"bufferView":23,
 			"componentType":5126,
 			"count":24,
 			"type":"VEC4"
-		},
-		{
-			"bufferView":9,
-			"componentType":5126,
-			"count":1,
-			"type":"MAT4"
 		}
 	],
 	"bufferViews":[
@@ -606,37 +967,122 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":288,
+			"byteLength":2304,
 			"byteOffset":1224,
 			"target":34962
 		},
 		{
 			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":3528,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":1536,
+			"byteOffset":5832,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":744,
+			"byteOffset":7368,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":8112,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":10416,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":1536,
+			"byteOffset":12720,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":14256,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":16560,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":1536,
+			"byteOffset":18864,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":744,
+			"byteOffset":20400,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":21144,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":23448,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":1536,
+			"byteOffset":25752,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":744,
+			"byteOffset":27288,
+			"target":34963
+		},
+		{
+			"buffer":0,
 			"byteLength":288,
-			"byteOffset":1512,
+			"byteOffset":28032,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":288,
+			"byteOffset":28320,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":192,
-			"byteOffset":1800,
+			"byteOffset":28608,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":384,
-			"byteOffset":1992,
+			"byteOffset":28800,
 			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":64,
-			"byteOffset":2376
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":2440,
+			"byteLength":29184,
 			"uri":"car1.bin"
 		}
 	]

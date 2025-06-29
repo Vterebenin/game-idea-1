@@ -8,9 +8,10 @@ impl Plugin for CharacterPlugin {
         app.register_type::<CharacterObject>()
             .register_type::<CharacterMesh>()
             .register_type::<SceneItem>()
+            .register_type::<Tire>()
             .register_type::<CharacterSpawner>()
             .add_observer(on_add_character)
-            .add_systems(Update, move_me_baby)
+            .add_systems(Update, (move_me_baby, place_tires))
             .add_systems(Update, log_transform_of_scene_items);
     }
 }
@@ -27,8 +28,14 @@ pub struct CharacterSpawner;
 #[reflect(Component)]
 pub struct CharacterObject;
 
+#[derive(Component, Reflect, Debug, Default)]
+#[reflect(Component, Default)]
+pub struct Tire {
+    relative_position: Vec3
+}
+
 #[derive(Component, Reflect, Debug)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 pub struct CharacterMesh {
     pub ride_height: f32,
     pub ride_strength: f32,
@@ -75,6 +82,16 @@ fn log_transform_of_scene_items(
 ) {
     for scene_item in scene_items_q.iter() {
         // commands.get_entity(scene_item).unwrap().log_components();
+    }
+}
+
+fn place_tires(
+    mut tires_q: Query<(&mut Transform, &Tire), (With<Tire>, Without<CharacterObject>)>,
+    character_obj_q: Single<&Transform, (Without<Tire>, With<CharacterObject>)>,
+) {
+    for (mut tire_transform, tire) in tires_q.iter_mut() {
+        tire_transform.translation = character_obj_q.translation + tire.relative_position;
+        println!("{}", tire_transform.translation)
     }
 }
 

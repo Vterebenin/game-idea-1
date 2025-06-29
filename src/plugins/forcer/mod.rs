@@ -1,4 +1,5 @@
 use avian3d::prelude::*;
+use bevy::color::palettes::tailwind::PINK_50;
 use bevy::prelude::*;
 
 use bevy::color::palettes::css::{BLUE, PINK, PURPLE, RED};
@@ -68,7 +69,16 @@ fn apply_spring_force(
             let total_force = down_direction * spring_force;
             let mut force_velocity = *velocity;
             force_velocity.y = (force_velocity.y.abs() * 4.).max(4.);
-            force.apply_force(total_force);
+            let locations = [
+                Vec3::new(1., 0., 1.),
+                Vec3::new(-1., 0., 1.),
+                Vec3::new(1., 0., -1.),
+                Vec3::new(-1., 0., -1.),
+            ];
+            for location in locations {
+                force.apply_force_at_point(total_force, location, Vec3::new(0., 0., 0.));
+                gizmos.line(transform.translation + location, transform.translation + location + down_direction * max_distance, PINK_50);
+            }
             apply_impulse_to_object(
                 &mut commands,
                 &objects_q,
@@ -106,10 +116,10 @@ fn compute_spring_force(
     let relative_velocity = velocity.dot(*Dir3::NEG_Y);
 
     let spring_force = (offset * player.ride_strength) - (relative_velocity * player.ride_damper);
-    println!(
-        "off: {} str: {} vel: {} damper: {} result: {}",
-        offset, player.ride_strength, relative_velocity, player.ride_damper, spring_force
-    );
+    // println!(
+    //     "off: {} str: {} vel: {} damper: {} result: {}",
+    //     offset, player.ride_strength, relative_velocity, player.ride_damper, spring_force
+    // );
 
     (spring_force, penetration)
 }
