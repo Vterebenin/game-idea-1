@@ -2,7 +2,7 @@ use avian3d::prelude::*;
 use bevy::color::palettes::tailwind::{PINK_50, RED_500};
 use bevy::prelude::*;
 
-use bevy::color::palettes::css::{BLUE, PINK, PURPLE, RED};
+use bevy::color::palettes::css::{BLACK, BLUE, PINK, PURPLE, RED};
 
 use super::character::{CharacterMesh, Tire};
 
@@ -41,6 +41,7 @@ fn apply_spring_force(
         &Transform,
         &mut ExternalForce,
         &mut LinearVelocity,
+        &AngularVelocity,
         &mut CharacterMesh,
         Entity,
     )>,
@@ -48,54 +49,54 @@ fn apply_spring_force(
     objects_q: Query<&Transform, (Without<CharacterMesh>, Without<Tire>)>,
     physics: SpatialQuery,
     mut gizmos: Gizmos,
+    time: Res<Time>,
 ) {
-    for (transform, mut force, velocity, player, player_id) in query.iter_mut() {
+    for (transform, mut force, velocity, ang_vel, player, player_id) in query.iter_mut() {
         for (tire_transform, tire, _entity) in tire_q.iter() {
-            let origin = transform.translation;
-            let down_direction = Dir3::NEG_Y;
-            let height_buffer = 0.1;
-            let max_distance = player.ride_height + height_buffer;
+            let rotation = transform.rotation * tire.relative_position;
+            let origin = rotation + transform.translation;
+            let down_direction = transform.down();
+            let max_distance = player.ride_height + 0.1;
             let query_filter =
                 SpatialQueryFilter::from_mask(0b1011).with_excluded_entities([player_id]);
-
             debug_draw_gizmos(&mut gizmos, origin, down_direction, max_distance);
 
+            let location = transform.rotation * tire.relative_position + transform.translation;
+            gizmos.sphere(location, 0.2, BLACK);
             if let Some(hit) =
                 physics.cast_ray(origin, down_direction, max_distance, true, &query_filter)
             {
-                let (spring_force, penetration) =
-                    compute_spring_force(&player, &velocity, hit.distance, height_buffer);
+                // get velocity at point of tire
+                let vel = velocity.0 + ang_vel.cross(location);
+                let spring_force =
+                    compute_spring_force(&player, &vel, hit.distance, transform.up());
 
-                handle_grounded_state(&mut commands, player_id, penetration, height_buffer);
-
-                let total_force = down_direction * spring_force;
-                let mut force_velocity = *velocity;
-                force_velocity.y = (force_velocity.y.abs() * 4.).max(4.);
-                let location = tire.relative_position;
-                force.apply_force_at_point(total_force, location, Vec3::new(0., 0., 0.));
+                println!("{}", spring_force);
+                let total_force = transform.up() * spring_force;
+                force.apply_force_at_point(total_force, location, transform.translation);
                 gizmos.line(
-                    transform.translation + location,
-                    transform.translation + location + down_direction * max_distance,
+                    location,
+                    location + down_direction * max_distance,
                     RED_500,
                 );
-                apply_impulse_to_object(
-                    &mut commands,
-                    &objects_q,
-                    hit.entity,
-                    origin,
-                    down_direction,
-                    *force_velocity,
-                    &mut gizmos,
-                );
-                let slope_angle = hit.normal.angle_between(Vec3::Y).to_degrees();
-                let max_slope_angle = 30.0; // Threshold for sliding
-                if slope_angle > max_slope_angle {
-                    let gravity = Vec3::NEG_Y;
-                    let normal = hit.normal;
-                    let sliding_direction = (gravity - normal * gravity.dot(normal)).normalize();
-                    let sliding_force = sliding_direction * (slope_angle - max_slope_angle) * 1.5;
-                    force.apply_force(sliding_force);
-                }
+                // apply_impulse_to_object(
+                //     &mut commands,
+                //     &objects_q,
+                //     hit.entity,
+                //     origin,
+                //     down_direction,
+                //     *force_velocity,
+                //     &mut gizmos,
+                // );
+                // let slope_angle = hit.normal.angle_between(Vec3::Y).to_degrees();
+                // let max_slope_angle = 30.0; // Threshold for sliding
+                // if slope_angle > max_slope_angle {
+                //     let gravity = Vec3::NEG_Y;
+                //     let normal = hit.normal;
+                //     let sliding_direction = (gravity - normal * gravity.dot(normal)).normalize();
+                //     let sliding_force = sliding_direction * (slope_angle - max_slope_angle) * 1.5;
+                //     force.apply_force(sliding_force);
+                // }
             } else {
                 commands.entity(player_id).remove::<Grounded>();
             }
@@ -105,23 +106,19 @@ fn apply_spring_force(
 
 fn compute_spring_force(
     player: &CharacterMesh,
-    velocity: &LinearVelocity,
+    velocity: &Vec3,
     hit_distance: f32,
-    height_buffer: f32,
-) -> (f32, f32) {
-    let penetration =
-        (player.ride_height + height_buffer - hit_distance).clamp(0.0, player.ride_height);
+    direction: Dir3,
+) -> f32 {
 
-    let offset = hit_distance - player.ride_height;
-    let relative_velocity = velocity.dot(*Dir3::NEG_Y);
+    let offset = player.ride_height - hit_distance;
+    let relative_velocity = direction.dot(*velocity);
 
-    let spring_force = (offset * player.ride_strength) - (relative_velocity * player.ride_damper);
+    (offset * player.ride_strength) - (relative_velocity * player.ride_damper)
     // println!(
     //     "off: {} str: {} vel: {} damper: {} result: {}",
     //     offset, player.ride_strength, relative_velocity, player.ride_damper, spring_force
     // );
-
-    (spring_force, penetration)
 }
 
 fn handle_grounded_state(

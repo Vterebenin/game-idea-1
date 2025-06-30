@@ -30,7 +30,7 @@
 		{
 			"name":"Scene World",
 			"nodes":[
-				13
+				12
 			]
 		}
 	],
@@ -94,39 +94,12 @@
 			"name":"static_test"
 		},
 		{
+			"extras":{
+				"skein_two":[],
+				"active_component_index":0,
+				"skein":[]
+			},
 			"mesh":1,
-			"name":"tire1"
-		},
-		{
-			"extras":{
-				"skein_two":[],
-				"active_component_index":0,
-				"skein":[]
-			},
-			"mesh":2,
-			"name":"tire2"
-		},
-		{
-			"mesh":3,
-			"name":"tire3"
-		},
-		{
-			"mesh":4,
-			"name":"tire4"
-		},
-		{
-			"children":[
-				3,
-				4,
-				5,
-				6
-			],
-			"extras":{
-				"skein_two":[],
-				"active_component_index":0,
-				"skein":[]
-			},
-			"mesh":5,
 			"name":"car"
 		},
 		{
@@ -146,9 +119,9 @@
 			},
 			"name":"Empty",
 			"translation":[
-				17.22705841064453,
-				4.843234062194824,
-				2.998178005218506
+				32.83796310424805,
+				4.688594341278076,
+				-0.4771461486816406
 			]
 		},
 		{
@@ -184,16 +157,79 @@
 			]
 		},
 		{
+			"mesh":2,
+			"name":"Cylinder",
+			"rotation":[
+				0.7071068286895752,
+				0,
+				0,
+				0.7071068286895752
+			],
+			"scale":[
+				0.17637233436107635,
+				5.69675874710083,
+				0.17637233436107635
+			],
+			"translation":[
+				19.969730377197266,
+				-0.5739356279373169,
+				0
+			]
+		},
+		{
+			"mesh":3,
+			"name":"Cylinder.001",
+			"rotation":[
+				0.7071068286895752,
+				0,
+				0,
+				0.7071068286895752
+			],
+			"scale":[
+				0.17637233436107635,
+				5.69675874710083,
+				0.17637233436107635
+			],
+			"translation":[
+				20.642290115356445,
+				-0.5739356279373169,
+				0
+			]
+		},
+		{
+			"mesh":4,
+			"name":"Cylinder.002",
+			"rotation":[
+				0.7071068286895752,
+				0,
+				0,
+				0.7071068286895752
+			],
+			"scale":[
+				0.17637233436107635,
+				5.69675874710083,
+				0.17637233436107635
+			],
+			"translation":[
+				22.756052017211914,
+				-0.5739356279373169,
+				0
+			]
+		},
+		{
 			"children":[
 				0,
 				1,
 				2,
+				3,
+				4,
+				5,
+				6,
 				7,
 				8,
 				9,
 				10,
-				11,
-				12
+				11
 			],
 			"name":"Scene World"
 		}
@@ -345,171 +381,11 @@
 			"extras":{
 				"skein_two":[
 					{
-						"name":"Tire",
-						"selected_type_path":"case_one::plugins::character::Tire",
-						"case_one::plugins::character::Tire":{
-							"relative_position":{
-								"x":1.0,
-								"y":-0.30000001192092896,
-								"z":0.4999999403953552
-							}
-						}
-					}
-				],
-				"active_component_index":0,
-				"skein":[
-					{
-						"case_one::plugins::character::Tire":{
-							"relative_position":[
-								1.0,
-								-0.30000001192092896,
-								0.4999999403953552
-							]
-						}
-					}
-				]
-			},
-			"name":"Cylinder.004",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":5,
-						"NORMAL":6,
-						"TEXCOORD_0":7
-					},
-					"indices":8
-				}
-			]
-		},
-		{
-			"extras":{
-				"skein_two":[
-					{
-						"name":"Tire",
-						"selected_type_path":"case_one::plugins::character::Tire",
-						"case_one::plugins::character::Tire":{
-							"relative_position":{
-								"x":1.0,
-								"y":-0.30000001192092896,
-								"z":-0.5
-							}
-						}
-					}
-				],
-				"active_component_index":0,
-				"skein":[
-					{
-						"case_one::plugins::character::Tire":{
-							"relative_position":[
-								1.0,
-								-0.30000001192092896,
-								-0.5
-							]
-						}
-					}
-				]
-			},
-			"name":"Cylinder.001",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":9,
-						"NORMAL":10,
-						"TEXCOORD_0":11
-					},
-					"indices":8
-				}
-			]
-		},
-		{
-			"extras":{
-				"skein_two":[
-					{
-						"name":"Tire",
-						"selected_type_path":"case_one::plugins::character::Tire",
-						"case_one::plugins::character::Tire":{
-							"relative_position":{
-								"x":-1.0,
-								"y":-0.30000001192092896,
-								"z":-0.5
-							}
-						}
-					}
-				],
-				"active_component_index":0,
-				"skein":[
-					{
-						"case_one::plugins::character::Tire":{
-							"relative_position":[
-								-1.0,
-								-0.30000001192092896,
-								-0.5
-							]
-						}
-					}
-				]
-			},
-			"name":"Cylinder.003",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":12,
-						"NORMAL":13,
-						"TEXCOORD_0":14
-					},
-					"indices":15
-				}
-			]
-		},
-		{
-			"extras":{
-				"skein_two":[
-					{
-						"name":"Tire",
-						"selected_type_path":"case_one::plugins::character::Tire",
-						"case_one::plugins::character::Tire":{
-							"relative_position":{
-								"x":-1.0,
-								"y":-0.30000001192092896,
-								"z":0.4999999403953552
-							}
-						}
-					}
-				],
-				"active_component_index":0,
-				"skein":[
-					{
-						"case_one::plugins::character::Tire":{
-							"relative_position":[
-								-1.0,
-								-0.30000001192092896,
-								0.4999999403953552
-							]
-						}
-					}
-				]
-			},
-			"name":"Cylinder",
-			"primitives":[
-				{
-					"attributes":{
-						"POSITION":16,
-						"NORMAL":17,
-						"TEXCOORD_0":18
-					},
-					"indices":19
-				}
-			]
-		},
-		{
-			"extras":{
-				"skein_two":[
-					{
 						"name":"CharacterMesh",
 						"selected_type_path":"case_one::plugins::character::CharacterMesh",
 						"case_one::plugins::character::CharacterMesh":{
-							"ride_damper":10.0,
-							"ride_height":1.5,
+							"ride_damper":15.0,
+							"ride_height":0.5,
 							"ride_strength":100.0
 						}
 					},
@@ -656,14 +532,33 @@
 						"avian3d::dynamics::rigid_body::physics_material::Restitution":{
 							"combine_rule":4
 						}
+					},
+					{
+						"name":"LinearDamping",
+						"selected_type_path":"avian3d::dynamics::rigid_body::LinearDamping",
+						"avian3d::dynamics::rigid_body::LinearDamping":1.0
+					},
+					{
+						"name":"AngularVelocity",
+						"selected_type_path":"avian3d::dynamics::rigid_body::AngularVelocity",
+						"avian3d::dynamics::rigid_body::AngularVelocity":{
+							"x":0.0,
+							"y":0.0,
+							"z":0.0
+						}
+					},
+					{
+						"name":"Mass",
+						"selected_type_path":"avian3d::dynamics::rigid_body::mass_properties::components::Mass",
+						"SKEIN_E96B456420F7FAB0B40CCCBD30A331F3":10.0
 					}
 				],
 				"active_component_index":0,
 				"skein":[
 					{
 						"case_one::plugins::character::CharacterMesh":{
-							"ride_damper":10.0,
-							"ride_height":1.5,
+							"ride_damper":15.0,
+							"ride_height":0.5,
 							"ride_strength":100.0
 						}
 					},
@@ -710,6 +605,19 @@
 							"coefficient":0.0,
 							"combine_rule":"Max"
 						}
+					},
+					{
+						"avian3d::dynamics::rigid_body::LinearDamping":1.0
+					},
+					{
+						"avian3d::dynamics::rigid_body::AngularVelocity":[
+							0.0,
+							0.0,
+							0.0
+						]
+					},
+					{
+						"avian3d::dynamics::rigid_body::mass_properties::components::Mass":10.0
 					}
 				]
 			},
@@ -717,13 +625,310 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":20,
-						"NORMAL":21,
-						"TEXCOORD_0":22,
-						"TANGENT":23
+						"POSITION":5,
+						"NORMAL":6,
+						"TEXCOORD_0":7,
+						"TANGENT":8
 					},
 					"indices":4,
 					"material":1
+				}
+			]
+		},
+		{
+			"extras":{
+				"skein_two":[
+					{
+						"name":"ColliderConstructor",
+						"selected_type_path":"avian3d::collision::collider::constructor::ColliderConstructor",
+						"avian3d::collision::collider::constructor::ColliderConstructor":{
+							"Sphere":{},
+							"Cuboid":{},
+							"RoundCuboid":{},
+							"Cylinder":{},
+							"Cone":{},
+							"Capsule":{},
+							"CapsuleEndpoints":{
+								"a":{},
+								"b":{}
+							},
+							"HalfSpace":{
+								"outward_normal":{}
+							},
+							"Segment":{
+								"a":{},
+								"b":{}
+							},
+							"Triangle":{
+								"a":{},
+								"b":{},
+								"c":{}
+							},
+							"Polyline":{
+								"indices":{
+									"Some":{}
+								},
+								"vertices":{}
+							},
+							"Trimesh":{
+								"indices":{},
+								"vertices":{}
+							},
+							"TrimeshWithConfig":{
+								"indices":{},
+								"vertices":{}
+							},
+							"ConvexDecomposition":{
+								"indices":{},
+								"vertices":{}
+							},
+							"ConvexDecompositionWithConfig":{
+								"indices":{},
+								"params":{
+									"fill_mode":{
+										"FloodFill":{}
+									}
+								},
+								"vertices":{}
+							},
+							"ConvexHull":{
+								"points":{}
+							},
+							"Heightfield":{
+								"heights":{},
+								"scale":{}
+							},
+							"ConvexDecompositionFromMeshWithConfig":{
+								"fill_mode":{
+									"FloodFill":{}
+								}
+							},
+							"skein_enum_index":17
+						}
+					},
+					{
+						"name":"RigidBody",
+						"selected_type_path":"avian3d::dynamics::rigid_body::RigidBody",
+						"avian3d::dynamics::rigid_body::RigidBody":1
+					}
+				],
+				"active_component_index":1,
+				"skein":[
+					{
+						"avian3d::collision::collider::constructor::ColliderConstructor":"TrimeshFromMesh"
+					},
+					{
+						"avian3d::dynamics::rigid_body::RigidBody":"Static"
+					}
+				]
+			},
+			"name":"Cylinder.002",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":9,
+						"NORMAL":10,
+						"TEXCOORD_0":11
+					},
+					"indices":12
+				}
+			]
+		},
+		{
+			"extras":{
+				"skein_two":[
+					{
+						"name":"ColliderConstructor",
+						"selected_type_path":"avian3d::collision::collider::constructor::ColliderConstructor",
+						"avian3d::collision::collider::constructor::ColliderConstructor":{
+							"Sphere":{},
+							"Cuboid":{},
+							"RoundCuboid":{},
+							"Cylinder":{},
+							"Cone":{},
+							"Capsule":{},
+							"CapsuleEndpoints":{
+								"a":{},
+								"b":{}
+							},
+							"HalfSpace":{
+								"outward_normal":{}
+							},
+							"Segment":{
+								"a":{},
+								"b":{}
+							},
+							"Triangle":{
+								"a":{},
+								"b":{},
+								"c":{}
+							},
+							"Polyline":{
+								"indices":{
+									"Some":{}
+								},
+								"vertices":{}
+							},
+							"Trimesh":{
+								"indices":{},
+								"vertices":{}
+							},
+							"TrimeshWithConfig":{
+								"indices":{},
+								"vertices":{}
+							},
+							"ConvexDecomposition":{
+								"indices":{},
+								"vertices":{}
+							},
+							"ConvexDecompositionWithConfig":{
+								"indices":{},
+								"params":{
+									"fill_mode":{
+										"FloodFill":{}
+									}
+								},
+								"vertices":{}
+							},
+							"ConvexHull":{
+								"points":{}
+							},
+							"Heightfield":{
+								"heights":{},
+								"scale":{}
+							},
+							"ConvexDecompositionFromMeshWithConfig":{
+								"fill_mode":{
+									"FloodFill":{}
+								}
+							},
+							"skein_enum_index":17
+						}
+					},
+					{
+						"name":"RigidBody",
+						"selected_type_path":"avian3d::dynamics::rigid_body::RigidBody",
+						"avian3d::dynamics::rigid_body::RigidBody":1
+					}
+				],
+				"active_component_index":1,
+				"skein":[
+					{
+						"avian3d::collision::collider::constructor::ColliderConstructor":"TrimeshFromMesh"
+					},
+					{
+						"avian3d::dynamics::rigid_body::RigidBody":"Static"
+					}
+				]
+			},
+			"name":"Cylinder.005",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":13,
+						"NORMAL":14,
+						"TEXCOORD_0":15
+					},
+					"indices":12
+				}
+			]
+		},
+		{
+			"extras":{
+				"skein_two":[
+					{
+						"name":"ColliderConstructor",
+						"selected_type_path":"avian3d::collision::collider::constructor::ColliderConstructor",
+						"avian3d::collision::collider::constructor::ColliderConstructor":{
+							"Sphere":{},
+							"Cuboid":{},
+							"RoundCuboid":{},
+							"Cylinder":{},
+							"Cone":{},
+							"Capsule":{},
+							"CapsuleEndpoints":{
+								"a":{},
+								"b":{}
+							},
+							"HalfSpace":{
+								"outward_normal":{}
+							},
+							"Segment":{
+								"a":{},
+								"b":{}
+							},
+							"Triangle":{
+								"a":{},
+								"b":{},
+								"c":{}
+							},
+							"Polyline":{
+								"indices":{
+									"Some":{}
+								},
+								"vertices":{}
+							},
+							"Trimesh":{
+								"indices":{},
+								"vertices":{}
+							},
+							"TrimeshWithConfig":{
+								"indices":{},
+								"vertices":{}
+							},
+							"ConvexDecomposition":{
+								"indices":{},
+								"vertices":{}
+							},
+							"ConvexDecompositionWithConfig":{
+								"indices":{},
+								"params":{
+									"fill_mode":{
+										"FloodFill":{}
+									}
+								},
+								"vertices":{}
+							},
+							"ConvexHull":{
+								"points":{}
+							},
+							"Heightfield":{
+								"heights":{},
+								"scale":{}
+							},
+							"ConvexDecompositionFromMeshWithConfig":{
+								"fill_mode":{
+									"FloodFill":{}
+								}
+							},
+							"skein_enum_index":17
+						}
+					},
+					{
+						"name":"RigidBody",
+						"selected_type_path":"avian3d::dynamics::rigid_body::RigidBody",
+						"avian3d::dynamics::rigid_body::RigidBody":1
+					}
+				],
+				"active_component_index":1,
+				"skein":[
+					{
+						"avian3d::collision::collider::constructor::ColliderConstructor":"TrimeshFromMesh"
+					},
+					{
+						"avian3d::dynamics::rigid_body::RigidBody":"Static"
+					}
+				]
+			},
+			"name":"Cylinder.006",
+			"primitives":[
+				{
+					"attributes":{
+						"POSITION":16,
+						"NORMAL":17,
+						"TEXCOORD_0":18
+					},
+					"indices":12
 				}
 			]
 		}
@@ -772,50 +977,50 @@
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":192,
+			"count":24,
 			"max":[
-				0.17281128466129303,
-				0.17281126976013184,
-				0.010801553726196289
+				1.0911448001861572,
+				0.318239688873291,
+				0.5629820227622986
 			],
 			"min":[
-				-0.17281125485897064,
-				-0.17281126976013184,
-				-0.010801553726196289
+				-1.0911452770233154,
+				-0.31823956966400146,
+				-0.5629820823669434
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":192,
+			"count":24,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":7,
 			"componentType":5126,
-			"count":192,
+			"count":24,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":8,
-			"componentType":5123,
-			"count":372,
-			"type":"SCALAR"
+			"componentType":5126,
+			"count":24,
+			"type":"VEC4"
 		},
 		{
 			"bufferView":9,
 			"componentType":5126,
 			"count":192,
 			"max":[
-				0.17281115055084229,
-				0.17281121015548706,
-				0.01080179214477539
+				1,
+				1,
+				1
 			],
 			"min":[
-				-0.1728113889694214,
-				-0.1728113293647766,
-				-0.010801315307617188
+				-1,
+				-1,
+				-1
 			],
 			"type":"VEC3"
 		},
@@ -833,51 +1038,51 @@
 		},
 		{
 			"bufferView":12,
-			"componentType":5126,
-			"count":192,
-			"max":[
-				0.17281122505664825,
-				0.17281126976013184,
-				0.010801553726196289
-			],
-			"min":[
-				-0.17281131446361542,
-				-0.17281128466129303,
-				-0.010801553726196289
-			],
-			"type":"VEC3"
+			"componentType":5123,
+			"count":372,
+			"type":"SCALAR"
 		},
 		{
 			"bufferView":13,
 			"componentType":5126,
 			"count":192,
+			"max":[
+				1,
+				1,
+				1
+			],
+			"min":[
+				-1,
+				-1,
+				-1
+			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":14,
 			"componentType":5126,
 			"count":192,
-			"type":"VEC2"
+			"type":"VEC3"
 		},
 		{
 			"bufferView":15,
-			"componentType":5123,
-			"count":372,
-			"type":"SCALAR"
+			"componentType":5126,
+			"count":192,
+			"type":"VEC2"
 		},
 		{
 			"bufferView":16,
 			"componentType":5126,
 			"count":192,
 			"max":[
-				0.17281150817871094,
-				0.17281121015548706,
-				0.010801553726196289
+				1,
+				1,
+				1
 			],
 			"min":[
-				-0.17281103134155273,
-				-0.1728113293647766,
-				-0.010801553726196289
+				-1,
+				-1,
+				-1
 			],
 			"type":"VEC3"
 		},
@@ -892,46 +1097,6 @@
 			"componentType":5126,
 			"count":192,
 			"type":"VEC2"
-		},
-		{
-			"bufferView":19,
-			"componentType":5123,
-			"count":372,
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":20,
-			"componentType":5126,
-			"count":24,
-			"max":[
-				1.0911448001861572,
-				0.318239688873291,
-				0.5629820227622986
-			],
-			"min":[
-				-1.0911452770233154,
-				-0.31823956966400146,
-				-0.5629820823669434
-			],
-			"type":"VEC3"
-		},
-		{
-			"bufferView":21,
-			"componentType":5126,
-			"count":24,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":22,
-			"componentType":5126,
-			"count":24,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":23,
-			"componentType":5126,
-			"count":24,
-			"type":"VEC4"
 		}
 	],
 	"bufferViews":[
@@ -967,122 +1132,92 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":2304,
+			"byteLength":288,
 			"byteOffset":1224,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":2304,
-			"byteOffset":3528,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":1536,
-			"byteOffset":5832,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":744,
-			"byteOffset":7368,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":2304,
-			"byteOffset":8112,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":2304,
-			"byteOffset":10416,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":1536,
-			"byteOffset":12720,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":2304,
-			"byteOffset":14256,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":2304,
-			"byteOffset":16560,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":1536,
-			"byteOffset":18864,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":744,
-			"byteOffset":20400,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":2304,
-			"byteOffset":21144,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":2304,
-			"byteOffset":23448,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":1536,
-			"byteOffset":25752,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":744,
-			"byteOffset":27288,
-			"target":34963
-		},
-		{
-			"buffer":0,
 			"byteLength":288,
-			"byteOffset":28032,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":288,
-			"byteOffset":28320,
+			"byteOffset":1512,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":192,
-			"byteOffset":28608,
+			"byteOffset":1800,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":384,
-			"byteOffset":28800,
+			"byteOffset":1992,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":2376,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":4680,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":1536,
+			"byteOffset":6984,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":744,
+			"byteOffset":8520,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":9264,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":11568,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":1536,
+			"byteOffset":13872,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":15408,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":2304,
+			"byteOffset":17712,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":1536,
+			"byteOffset":20016,
 			"target":34962
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":29184,
+			"byteLength":21552,
 			"uri":"car1.bin"
 		}
 	]
