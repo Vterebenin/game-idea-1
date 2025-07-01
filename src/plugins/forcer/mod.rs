@@ -120,7 +120,7 @@ fn apply_steering_force(
     mut gizmos: Gizmos,
     time: Res<Time>,
 ) {
-    let tire_grip_factor = 0.8;
+    let tire_grip_factor = 0.3;
 
     for (transform, mut force, velocity, ang_vel, player, mass, player_id) in query.iter_mut() {
         for (tire_transform, _tire, _entity) in tire_q.iter() {
@@ -148,10 +148,11 @@ fn apply_steering_force(
 
                 let desired_vel_change = tire_grip_factor * -steering_vel;
 
-                let desired_accel = desired_vel_change / time.delta_secs();
+                let desired_accel = desired_vel_change;
                 // 4. is the number of tires
-                let tire_mass = **mass / 400.;
+                let tire_mass = **mass / 1000.;
                 let total_force = steering_dir * tire_mass * desired_accel;
+                println!("total_force: {}", total_force);
                 force.apply_force_at_point(total_force, tire_position, transform.translation);
                 gizmos.arrow(
                     tire_position,
@@ -272,15 +273,10 @@ fn apply_acceleration_force(
                         .is_some()
                     {
                         let accel_dir = tire_transform.local_x();
-                        let car_top_speed = 2000.;
+                        let car_top_speed = 10.;
                         let car_speed = transform.forward().dot(**velocity);
                         let normalized_speed = clamp(car_speed.abs() / car_top_speed, 0., 1.);
-                        let available_torque = normalized_speed * accel_input * 10.;
-                        let available_torque = if *accel_input > 0. {
-                            available_torque.max(20.)
-                        } else {
-                            available_torque.min(-20.)
-                        };
+                        let available_torque = normalized_speed.max(0.1) * accel_input * 3.;
                         let total_force = accel_dir * available_torque;
 
                         println!(

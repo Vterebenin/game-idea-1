@@ -342,9 +342,9 @@
 						"name":"CharacterMesh",
 						"selected_type_path":"case_one::plugins::character::CharacterMesh",
 						"case_one::plugins::character::CharacterMesh":{
-							"ride_damper":1000.0,
+							"ride_damper":50.5,
 							"ride_height":1.0,
-							"ride_strength":5000.0
+							"ride_strength":100.0
 						}
 					},
 					{
@@ -508,16 +508,16 @@
 					{
 						"name":"Mass",
 						"selected_type_path":"avian3d::dynamics::rigid_body::mass_properties::components::Mass",
-						"SKEIN_E96B456420F7FAB0B40CCCBD30A331F3":200.0
+						"SKEIN_E96B456420F7FAB0B40CCCBD30A331F3":10.0
 					}
 				],
-				"active_component_index":6,
+				"active_component_index":0,
 				"skein":[
 					{
 						"case_one::plugins::character::CharacterMesh":{
-							"ride_damper":1000.0,
+							"ride_damper":50.5,
 							"ride_height":1.0,
-							"ride_strength":5000.0
+							"ride_strength":100.0
 						}
 					},
 					{
@@ -575,7 +575,7 @@
 						]
 					},
 					{
-						"avian3d::dynamics::rigid_body::mass_properties::components::Mass":200.0
+						"avian3d::dynamics::rigid_body::mass_properties::components::Mass":10.0
 					}
 				]
 			},
