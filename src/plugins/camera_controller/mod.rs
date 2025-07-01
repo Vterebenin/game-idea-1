@@ -64,7 +64,7 @@ fn on_add_camera_mark(
         Transform::from_translation(target_translation).looking_at(Vec3::ZERO, Vec3::Y),
     ));
 
-    let offset = Transform::from_xyz(0.0, 0.0, 0.0).translation;
+    let offset = Transform::from_xyz(0.0, 1.0, 0.0).translation;
     let target_translation = character_transform.translation - offset;
     commands.spawn((
         CameraTarget,
@@ -82,7 +82,6 @@ fn rotate_camera(
     time: Res<Time>,
     physics: SpatialQuery,
 ) {
-    // println!("{} {}", player_query.is_empty(), camera_query.is_empty());
     if player_query.is_empty() || camera_query.is_empty() {
         return;
     }

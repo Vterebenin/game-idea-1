@@ -1,8 +1,10 @@
+use avian3d::parry::na::clamp;
 use avian3d::prelude::*;
 use bevy::color::palettes::tailwind::{PINK_50, RED_500};
+use bevy::gizmos::gizmos;
 use bevy::prelude::*;
 
-use bevy::color::palettes::css::{BLACK, BLUE, PINK, PURPLE, RED};
+use bevy::color::palettes::css::{BLACK, BLUE, GREEN, PINK, PURPLE, RED};
 
 use super::character::{CharacterMesh, Tire};
 
@@ -10,8 +12,9 @@ pub struct ForcerPlugin;
 
 impl Plugin for ForcerPlugin {
     fn build(&self, app: &mut App) {
-        app // .add_event::<MovementAction>()
+        app.add_event::<MovementAction>()
             //.add_systems(PreUpdate, keyboard_input.run_if(in_state(GameState::InGame)))
+            .add_systems(Update, (on_movement_action, on_tire_rotation))
             .add_systems(
                 FixedUpdate,
                 (
@@ -19,8 +22,9 @@ impl Plugin for ForcerPlugin {
                     // apply_movement_damping,
                     // update_coyote_time,
                     apply_spring_force,
-                )
-                    .chain(),
+                    apply_steering_force,
+                    apply_acceleration_force,
+                ),
             );
     }
 }
@@ -34,6 +38,17 @@ impl Plugin for ForcerPlugin {
 #[derive(Component)]
 #[component(storage = "SparseSet")]
 pub struct Grounded;
+
+pub enum SteeringDir {
+    Left,
+    Right,
+}
+
+#[derive(Event)]
+pub enum MovementAction {
+    Steer(SteeringDir),
+    Accelerate(f32),
+}
 
 fn apply_spring_force(
     mut commands: Commands,
@@ -53,50 +68,36 @@ fn apply_spring_force(
 ) {
     for (transform, mut force, velocity, ang_vel, player, player_id) in query.iter_mut() {
         for (tire_transform, tire, _entity) in tire_q.iter() {
-            let rotation = transform.rotation * tire.relative_position;
-            let origin = rotation + transform.translation;
-            let down_direction = transform.down();
-            let max_distance = player.ride_height + 0.1;
+            let tire_position =
+                transform.rotation * tire_transform.translation + transform.translation;
+            let down_direction = -tire_transform.local_y();
+            let max_distance = player.ride_height + 0.3;
             let query_filter =
                 SpatialQueryFilter::from_mask(0b1011).with_excluded_entities([player_id]);
-            debug_draw_gizmos(&mut gizmos, origin, down_direction, max_distance);
 
-            let location = transform.rotation * tire.relative_position + transform.translation;
-            gizmos.sphere(location, 0.2, BLACK);
-            if let Some(hit) =
-                physics.cast_ray(origin, down_direction, max_distance, true, &query_filter)
-            {
+            if let Some(hit) = physics.cast_ray(
+                tire_position,
+                down_direction,
+                max_distance,
+                true,
+                &query_filter,
+            ) {
                 // get velocity at point of tire
-                let vel = velocity.0 + ang_vel.cross(location);
-                let spring_force =
-                    compute_spring_force(&player, &vel, hit.distance, transform.up());
+                let vel = velocity.0 + ang_vel.cross(tire_position);
 
-                println!("{}", spring_force);
+                let offset = player.ride_height - hit.distance;
+                let relative_velocity = transform.up().dot(vel);
+
+                let spring_force =
+                    (offset * player.ride_strength) - (relative_velocity * player.ride_damper);
+
                 let total_force = transform.up() * spring_force;
-                force.apply_force_at_point(total_force, location, transform.translation);
-                gizmos.line(
-                    location,
-                    location + down_direction * max_distance,
-                    RED_500,
+                force.apply_force_at_point(total_force, tire_position, transform.translation);
+                gizmos.arrow(
+                    tire_position,
+                    tire_position + total_force * *transform.up() * 0.05,
+                    GREEN,
                 );
-                // apply_impulse_to_object(
-                //     &mut commands,
-                //     &objects_q,
-                //     hit.entity,
-                //     origin,
-                //     down_direction,
-                //     *force_velocity,
-                //     &mut gizmos,
-                // );
-                // let slope_angle = hit.normal.angle_between(Vec3::Y).to_degrees();
-                // let max_slope_angle = 30.0; // Threshold for sliding
-                // if slope_angle > max_slope_angle {
-                //     let gravity = Vec3::NEG_Y;
-                //     let normal = hit.normal;
-                //     let sliding_direction = (gravity - normal * gravity.dot(normal)).normalize();
-                //     let sliding_force = sliding_direction * (slope_angle - max_slope_angle) * 1.5;
-                //     force.apply_force(sliding_force);
-                // }
             } else {
                 commands.entity(player_id).remove::<Grounded>();
             }
@@ -104,60 +105,201 @@ fn apply_spring_force(
     }
 }
 
-fn compute_spring_force(
-    player: &CharacterMesh,
-    velocity: &Vec3,
-    hit_distance: f32,
-    direction: Dir3,
-) -> f32 {
-
-    let offset = player.ride_height - hit_distance;
-    let relative_velocity = direction.dot(*velocity);
-
-    (offset * player.ride_strength) - (relative_velocity * player.ride_damper)
-    // println!(
-    //     "off: {} str: {} vel: {} damper: {} result: {}",
-    //     offset, player.ride_strength, relative_velocity, player.ride_damper, spring_force
-    // );
-}
-
-fn handle_grounded_state(
-    commands: &mut Commands,
-    player_id: Entity,
-    penetration: f32,
-    buffer: f32,
+fn apply_steering_force(
+    mut query: Query<(
+        &Transform,
+        &mut ExternalForce,
+        &mut LinearVelocity,
+        &AngularVelocity,
+        &mut CharacterMesh,
+        &Mass,
+        Entity,
+    )>,
+    tire_q: Query<(&Transform, &Tire, Entity)>,
+    physics: SpatialQuery,
+    mut gizmos: Gizmos,
+    time: Res<Time>,
 ) {
-    if penetration > buffer {
-        commands.entity(player_id).insert(Grounded);
-    } else {
-        commands.entity(player_id).remove::<Grounded>();
+    let tire_grip_factor = 0.8;
+
+    for (transform, mut force, velocity, ang_vel, player, mass, player_id) in query.iter_mut() {
+        for (tire_transform, _tire, _entity) in tire_q.iter() {
+            let tire_position =
+                transform.rotation * tire_transform.translation + transform.translation;
+            let steering_dir = -tire_transform.local_z();
+
+            let down_direction = -tire_transform.local_y();
+            let max_distance = player.ride_height + 0.1;
+            let query_filter =
+                SpatialQueryFilter::from_mask(0b1011).with_excluded_entities([player_id]);
+            if physics
+                .cast_ray(
+                    tire_position,
+                    down_direction,
+                    max_distance,
+                    true,
+                    &query_filter,
+                )
+                .is_some()
+            {
+                let tire_vel = velocity.0 + ang_vel.cross(tire_position);
+
+                let steering_vel = steering_dir.dot(tire_vel);
+
+                let desired_vel_change = tire_grip_factor * -steering_vel;
+
+                let desired_accel = desired_vel_change / time.delta_secs();
+                // 4. is the number of tires
+                let tire_mass = **mass / 400.;
+                let total_force = steering_dir * tire_mass * desired_accel;
+                force.apply_force_at_point(total_force, tire_position, transform.translation);
+                gizmos.arrow(
+                    tire_position,
+                    tire_position + total_force * *steering_dir * 0.1,
+                    RED,
+                );
+            }
+        }
     }
 }
 
-fn apply_impulse_to_object(
-    commands: &mut Commands,
-    objects_q: &Query<&Transform, (Without<CharacterMesh>, Without<Tire>)>,
-    hit_entity: Entity,
-    origin: Vec3,
-    down_direction: Dir3,
-    total_force: Vec3,
-    gizmos: &mut Gizmos,
+fn on_movement_action(
+    mut movement_event_writer: EventWriter<MovementAction>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
-    if let Ok(transform) = objects_q.get(hit_entity) {
-        let mut impulse = ExternalImpulse::default();
-        let point = origin + down_direction * total_force.length();
-        let impulse_value = (total_force * *down_direction * 0.3)
-            .clamp(Vec3::new(0., -4., 0.), Vec3::new(0., 1., 0.));
-
-        impulse.apply_impulse_at_point(impulse_value, point, transform.translation);
-
-        gizmos.sphere(point, 0.1, PURPLE);
-        gizmos.line(point, point + impulse_value, PINK);
-
-        commands.entity(hit_entity).insert(impulse);
+    // keys should be handled by controls
+    if keyboard_input.pressed(KeyCode::KeyW) {
+        movement_event_writer.write(MovementAction::Accelerate(2.));
+    }
+    if keyboard_input.pressed(KeyCode::KeyS) {
+        movement_event_writer.write(MovementAction::Accelerate(-1.));
+    }
+    if keyboard_input.pressed(KeyCode::KeyD) {
+        movement_event_writer.write(MovementAction::Steer(SteeringDir::Right));
+    }
+    if keyboard_input.pressed(KeyCode::KeyA) {
+        movement_event_writer.write(MovementAction::Steer(SteeringDir::Left));
     }
 }
 
-fn debug_draw_gizmos(gizmos: &mut Gizmos, origin: Vec3, direction: Dir3, max_distance: f32) {
-    gizmos.line(origin, origin + direction * max_distance, BLUE);
+const MAX_STEER_ANGLE: f32 = 45.0_f32.to_radians();
+
+fn on_tire_rotation(
+    mut movement_reader: EventReader<MovementAction>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut query: Query<(&mut Transform, &Tire), (Without<CharacterMesh>, With<Tire>)>,
+    char_q: Query<&Transform, (Without<Tire>, With<CharacterMesh>)>,
+    time: Res<Time>,
+    mut gizmos: Gizmos,
+) {
+    let is_steering =
+        keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::KeyD);
+    for char_transform in char_q.iter() {
+        for (transform, _) in &mut query {
+            let origin = char_transform.rotation * transform.translation + char_transform.translation;
+            gizmos.line(origin, origin + *transform.local_z(), RED);
+            gizmos.line(origin, origin + *transform.local_y(), GREEN);
+            gizmos.line(origin, origin + *transform.local_x(), BLUE);
+        }
+    }
+
+    for event in movement_reader.read() {
+        if let MovementAction::Steer(dir) = event {
+            for (mut transform, tire) in &mut query {
+                if !tire.is_front {
+                    continue;
+                }
+
+                let current_angle = transform.rotation.to_euler(EulerRot::YXZ).0;
+                let rotation_amount = match dir {
+                    SteeringDir::Left => 0.03_f32.min(MAX_STEER_ANGLE - current_angle),
+                    SteeringDir::Right => -0.03_f32.min(current_angle - (-MAX_STEER_ANGLE)),
+                };
+
+                if rotation_amount.abs() > f32::EPSILON {
+                    transform.rotate(Quat::from_rotation_y(rotation_amount));
+                }
+            }
+        }
+    }
+
+    if !is_steering {
+        for (mut transform, _tire) in &mut query {
+            // Get current rotation and lerp back to identity (0 rotation)
+            let current_rot = transform.rotation;
+            let target_rot = Quat::IDENTITY;
+            let return_speed = 3.0; // Adjust this value for faster/slower return
+            transform.rotation = current_rot.slerp(target_rot, return_speed * time.delta_secs());
+        }
+    }
+}
+
+fn apply_acceleration_force(
+    mut movement_reader: EventReader<MovementAction>,
+    mut query: Query<(
+        &Transform,
+        &mut ExternalForce,
+        &mut LinearVelocity,
+        &AngularVelocity,
+        &mut CharacterMesh,
+        &Mass,
+        Entity,
+    )>,
+    tire_q: Query<(&Transform, &Tire, Entity)>,
+    physics: SpatialQuery,
+    mut gizmos: Gizmos,
+    time: Res<Time>,
+) {
+    for (transform, mut force, velocity, ang_vel, player, mass, player_id) in query.iter_mut() {
+        for event in movement_reader.read() {
+            if let MovementAction::Accelerate(accel_input) = event {
+                for (tire_transform, _tire, _entity) in tire_q.iter() {
+                    let tire_position =
+                        transform.rotation * tire_transform.translation + transform.translation;
+
+                    let down_direction = -tire_transform.local_y();
+                    let max_distance = player.ride_height + 0.1;
+                    let query_filter =
+                        SpatialQueryFilter::from_mask(0b1011).with_excluded_entities([player_id]);
+                    if physics
+                        .cast_ray(
+                            tire_position,
+                            down_direction,
+                            max_distance,
+                            true,
+                            &query_filter,
+                        )
+                        .is_some()
+                    {
+                        let accel_dir = tire_transform.local_x();
+                        let car_top_speed = 2000.;
+                        let car_speed = transform.forward().dot(**velocity);
+                        let normalized_speed = clamp(car_speed.abs() / car_top_speed, 0., 1.);
+                        let available_torque = normalized_speed * accel_input * 10.;
+                        let available_torque = if *accel_input > 0. {
+                            available_torque.max(20.)
+                        } else {
+                            available_torque.min(-20.)
+                        };
+                        let total_force = accel_dir * available_torque;
+
+                        println!(
+                            "{} {} {} {}",
+                            total_force, car_speed, normalized_speed, available_torque
+                        );
+                        force.apply_force_at_point(
+                            total_force,
+                            tire_position,
+                            transform.translation,
+                        );
+                        gizmos.arrow(
+                            tire_position,
+                            tire_position + total_force * *accel_dir,
+                            BLUE,
+                        );
+                    }
+                }
+            }
+        }
+    }
 }

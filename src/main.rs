@@ -25,7 +25,16 @@ fn main() {
         .run();
 }
 
+#[derive(Resource)]
+pub struct GltfAssets {
+    handle: Handle<Gltf>,
+}
+
 fn startup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let handle: Handle<Gltf> = asset_server.load("items/library.gltf");
+
+    commands.insert_resource(GltfAssets { handle });
+
     // todo: move to scene loader
     commands.spawn(SceneRoot(
         asset_server.load(GltfAssetLabel::Scene(0).from_asset("cars/car1.gltf")),
