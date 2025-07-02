@@ -144,11 +144,13 @@ fn change_spring_forcer(
     keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
     for mut char_mesh in character_transform {
-        if keyboard_input.pressed(KeyCode::ArrowUp) {
-            char_mesh.ride_strength += 1.;
+        if keyboard_input.just_pressed(KeyCode::ArrowUp) {
+            char_mesh.ride_height += 0.05;
+            println!("{}", char_mesh.ride_height);
         }
-        if keyboard_input.pressed(KeyCode::ArrowDown) {
-            char_mesh.ride_strength -= 1.;
+        if keyboard_input.just_pressed(KeyCode::ArrowDown) {
+            char_mesh.ride_height -= 0.05;
+            println!("{}", char_mesh.ride_height);
         }
         if keyboard_input.pressed(KeyCode::ArrowLeft) {
             char_mesh.ride_damper -= 1.;
