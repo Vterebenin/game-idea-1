@@ -75,10 +75,10 @@ fn on_add_character_add_tires(
     gltf: Res<Assets<Gltf>>,
 ) {
     let positions_of_tires = vec![
-        (Vec3::new(1., -0.3, 0.5), true),
-        (Vec3::new(1., -0.3, -0.5), true),
-        (Vec3::new(-1., -0.3, -0.5), false),
-        (Vec3::new(-1., -0.3, 0.5), false),
+        (Vec3::new(0.5, -0.3, 0.9), false),
+        (Vec3::new(-0.5, -0.3, 0.9), false),
+        (Vec3::new(-0.5, -0.3, -0.9), true),
+        (Vec3::new(0.5, -0.3, -0.9), true),
     ];
     for (position, is_front) in positions_of_tires {
         let gltf = gltf

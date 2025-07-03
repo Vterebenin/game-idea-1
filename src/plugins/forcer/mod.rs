@@ -31,7 +31,7 @@ impl Plugin for ForcerPlugin {
     }
 }
 
-const RAY_CAST_MAX_OFFSET: f32 = 0.9;
+const RAY_CAST_MAX_OFFSET: f32 = 0.1;
 
 // #[derive(Component, Reflect, Debug)]
 // #[reflect(Component)]
@@ -96,7 +96,6 @@ fn apply_spring_force(
                 let spring_dir = combined_transform.up();
 
                 let offset = player.ride_height - hit.distance;
-                println!("{} {} {}", offset, hit.distance, player.ride_height);
                 let relative_velocity = spring_dir.dot(vel);
 
                 let spring_force =
@@ -125,13 +124,13 @@ fn apply_steering_force(
     mut gizmos: Gizmos,
     time: Res<Time>,
 ) {
-    let tire_grip_factor = 0.6;
+    let tire_grip_factor = 0.05;
 
     for (car_transform, mut force, velocity, ang_vel, player, mass, player_id) in query.iter_mut() {
         for (tire_transform, _tire, _entity) in tire_q.iter() {
             let combined_transform = car_transform.mul_transform(*tire_transform);
             let tire_position = combined_transform.translation;
-            let steering_dir = -combined_transform.local_z();
+            let steering_dir = combined_transform.right();
 
             let down_direction = -combined_transform.local_y();
             let max_distance = player.ride_height + RAY_CAST_MAX_OFFSET;
@@ -157,6 +156,8 @@ fn apply_steering_force(
                 // 4. is the number of tires
                 let tire_mass = **mass / 4.;
                 let total_force = steering_dir * tire_mass * desired_accel;
+                println!("{} {}", desired_accel, tire_mass);
+                
                 force.apply_force_at_point(total_force, tire_position, car_transform.translation);
                 gizmos.arrow(tire_position, tire_position + total_force, RED);
             }
@@ -274,8 +275,8 @@ fn apply_acceleration_force(
                         )
                         .is_some()
                     {
-                        let accel_dir = combined_transform.local_x();
-                        let car_top_speed = 20.;
+                        let accel_dir = combined_transform.forward();
+                        let car_top_speed = 25.;
                         let car_speed = (car_transform.forward().dot(**velocity)).abs().max(0.1);
                         let speed_factor = 1.0 - (car_speed / car_top_speed).powi(2);
                         let available_torque = speed_factor * accel_input * 4.;
@@ -301,4 +302,3 @@ fn apply_movement_damping(mut query: Query<&mut LinearVelocity>) {
         linear_velocity.z *= factor;
     }
 }
-
