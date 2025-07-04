@@ -1,4 +1,7 @@
-use avian3d::prelude::{AngularVelocity, LinearVelocity};
+use avian3d::{
+    math::FRAC_PI_2,
+    prelude::{AngularVelocity, Collider, LinearVelocity, ShapeCaster, SpatialQueryFilter},
+};
 use bevy::{gltf::GltfMesh, prelude::*};
 
 use crate::GltfAssets;
@@ -105,6 +108,16 @@ fn on_add_character_add_tires(
                 Mesh3d(primitive.mesh.clone()),
                 MeshMaterial3d(primitive.material.clone().ok_or("Option was None").unwrap()),
                 Transform::from_translation(position),
+                ShapeCaster::new(
+                    Collider::cylinder(0.3, 0.6),
+                    Vec3::new(-position.x / 2.5, 0., 0.),
+                    Quat::from_rotation_z(FRAC_PI_2),
+                    Dir3::NEG_Y,
+                )
+                .with_max_distance(0.4)
+                .with_query_filter(
+                    SpatialQueryFilter::from_mask(0b1011).with_excluded_entities([trigger.target()])
+                ),
             ));
         });
     }
