@@ -1,6 +1,5 @@
-use avian3d::{
-    math::FRAC_PI_2,
-    prelude::{AngularVelocity, Collider, LinearVelocity, ShapeCaster, SpatialQueryFilter},
+use avian3d::prelude::{
+    AngularVelocity, Collider, LinearVelocity, ShapeCaster, SpatialQueryFilter,
 };
 use bevy::{gltf::GltfMesh, prelude::*};
 
@@ -18,7 +17,7 @@ impl Plugin for CharacterPlugin {
             .add_observer(on_add_character)
             .add_observer(on_add_character_add_tires)
             .add_systems(Update, respawn)
-            // .add_systems(Update, place_tires)
+            .add_systems(Update, place_tires)
             .add_systems(Update, change_spring_forcer)
             .add_systems(Update, log_transform_of_scene_items);
     }
@@ -41,6 +40,7 @@ pub struct CharacterObject;
 pub struct Tire {
     pub relative_position: Vec3,
     pub is_front: bool,
+    pub steering_transform: Transform,
 }
 
 #[derive(Component, Reflect, Debug)]
@@ -99,29 +99,19 @@ fn on_add_character_add_tires(
             .unwrap()
             .primitives[0];
 
-        commands.entity(trigger.target()).with_children(|comm| {
-            comm.spawn((
-                Tire {
-                    relative_position: position,
-                    is_front,
-                },
-                Mesh3d(primitive.mesh.clone()),
-                MeshMaterial3d(primitive.material.clone().ok_or("Option was None").unwrap()),
-                Transform::from_translation(position),
-                ShapeCaster::new(
-                    Collider::cylinder(0.3, 0.6),
-                    Vec3::new(-position.x / 2.5, 0., 0.),
-                    Quat::from_rotation_z(FRAC_PI_2),
-                    Dir3::NEG_Y,
-                )
-                .with_max_distance(0.4)
-                .with_query_filter(
-                    SpatialQueryFilter::from_mask(0b1011).with_excluded_entities([trigger.target()])
-                ),
-            ));
-        });
+        commands.spawn((
+            Tire {
+                relative_position: position,
+                is_front,
+                steering_transform: Transform::default(),
+            },
+            Mesh3d(primitive.mesh.clone()),
+            MeshMaterial3d(primitive.material.clone().ok_or("Option was None").unwrap()),
+            Transform::from_translation(position),
+        ));
     }
 }
+
 fn on_add_character(
     _trigger: Trigger<OnAdd, CharacterMesh>,
     spawner_transform: Single<&Transform, (With<CharacterSpawner>, Without<CharacterMesh>)>,
@@ -170,6 +160,19 @@ fn change_spring_forcer(
         }
         if keyboard_input.pressed(KeyCode::ArrowRight) {
             char_mesh.ride_damper += 1.;
+        }
+    }
+}
+
+fn place_tires(
+    mut car_tires: Query<(&mut Transform, &Tire), (Without<CharacterMesh>, With<Tire>)>,
+    mut car_mesh: Query<&Transform, (With<CharacterMesh>, Without<Tire>)>,
+) {
+    for car_transform in car_mesh {
+        for (mut tire_transforms, tire) in &mut car_tires {
+            tire_transforms.translation = car_transform.rotation * tire.relative_position + car_transform.translation;
+            // todo: how to combine two rotations?
+            tire_transforms.rotation = car_transform.rotation * tire.steering_transform.rotation;
         }
     }
 }

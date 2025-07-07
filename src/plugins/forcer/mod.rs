@@ -67,51 +67,48 @@ const MAX_STEER_ANGLE: f32 = 45.0_f32.to_radians();
 fn on_tire_rotation(
     mut movement_reader: EventReader<MovementAction>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut query: Query<(&mut Transform, &Tire), (Without<CharacterMesh>, With<Tire>)>,
+    mut query: Query<(&mut Transform, &mut Tire), (Without<CharacterMesh>, With<Tire>)>,
     char_q: Query<&Transform, (Without<Tire>, With<CharacterMesh>)>,
     time: Res<Time>,
     mut gizmos: Gizmos,
 ) {
     let is_steering =
         keyboard_input.pressed(KeyCode::KeyA) || keyboard_input.pressed(KeyCode::KeyD);
-    for car_transform in char_q.iter() {
-        for (tire_transform, _) in &mut query {
-            let combined_transform = car_transform.mul_transform(*tire_transform);
-            let origin = combined_transform.translation;
+    for (tire_transform, _) in &mut query {
+        let origin = tire_transform.translation;
 
-            gizmos.line(origin, origin + *combined_transform.local_z(), RED);
-            gizmos.line(origin, origin + *combined_transform.local_y(), GREEN);
-            gizmos.line(origin, origin + *combined_transform.local_x(), BLUE);
-        }
+        gizmos.line(origin, origin + *tire_transform.local_z(), RED);
+        gizmos.line(origin, origin + *tire_transform.local_y(), GREEN);
+        gizmos.line(origin, origin + *tire_transform.local_x(), BLUE);
     }
 
     for event in movement_reader.read() {
-        if let MovementAction::Steer(dir) = event {
-            for (mut transform, tire) in &mut query {
-                if !tire.is_front {
-                    continue;
-                }
+        let MovementAction::Steer(dir) = event;
+        for (mut transform, mut tire) in &mut query {
+            if !tire.is_front {
+                continue;
+            }
 
-                let current_angle = transform.rotation.to_euler(EulerRot::YXZ).0;
-                let rotation_amount = match dir {
-                    SteeringDir::Left => 0.03_f32.min(MAX_STEER_ANGLE - current_angle),
-                    SteeringDir::Right => -0.03_f32.min(current_angle - (-MAX_STEER_ANGLE)),
-                };
+            let current_angle = tire.steering_transform.rotation.to_euler(EulerRot::YXZ).0;
+            let rotation_amount = match dir {
+                SteeringDir::Left => 0.03_f32.min(MAX_STEER_ANGLE - current_angle),
+                SteeringDir::Right => -0.03_f32.min(current_angle - (-MAX_STEER_ANGLE)),
+            };
 
-                if rotation_amount.abs() > f32::EPSILON {
-                    transform.rotate(Quat::from_rotation_y(rotation_amount));
-                }
+            if rotation_amount.abs() > f32::EPSILON {
+                tire.steering_transform
+                    .rotate(Quat::from_rotation_y(rotation_amount));
             }
         }
     }
 
     if !is_steering {
-        for (mut transform, _tire) in &mut query {
+        for (mut transform, mut tire) in &mut query {
             // Get current rotation and lerp back to identity (0 rotation)
-            let current_rot = transform.rotation;
+            let current_rot = tire.steering_transform.rotation;
             let target_rot = Quat::IDENTITY;
-            let return_speed = 3.0; // Adjust this value for faster/slower return
-            transform.rotation = current_rot.slerp(target_rot, return_speed * time.delta_secs());
+            let return_speed = 3.0;
+            tire.steering_transform.rotation = current_rot.slerp(target_rot, return_speed * time.delta_secs());
         }
     }
 }
@@ -125,10 +122,10 @@ fn apply_multi_force(
         &AngularVelocity,
         &CharacterMesh,
         &mut LinearDamping,
-        &Mass,
+        &ComputedMass,
         Entity,
     )>,
-    tire_q: Query<(&Transform, &ShapeCaster, &ShapeHits), With<Tire>>,
+    tire_q: Query<&Transform, With<Tire>>,
     physics: SpatialQuery,
     mut gizmos: Gizmos,
     time: Res<Time>,
@@ -146,9 +143,9 @@ fn apply_multi_force(
     ) in query.iter_mut()
     {
         let mut tires_on_ground = 0;
-        for (tire_transform, shape_caster, shape_hits) in tire_q.iter() {
-            let combined_transform = car_transform.mul_transform(*tire_transform);
-            let tire_position = combined_transform.translation;
+        for tire_transform in tire_q.iter() {
+            let combined_transform = *tire_transform;
+            let tire_position = tire_transform.translation;
 
             let query_filter = get_filter(player_id);
             let ray_hit = get_wheel_ray_hit(
@@ -158,14 +155,12 @@ fn apply_multi_force(
                 combined_transform,
             );
 
-            if shape_hits.is_empty() {
+            if ray_hit.is_none() {
                 continue;
             }
             tires_on_ground += 1;
-            let mut distance = 0.;
-            for hit in shape_hits.iter() {
-                distance = hit.distance;
-            }
+            let ray_hit = ray_hit.unwrap();
+            let distance = ray_hit.distance;
 
             let mut accel_force = Vec3::new(0., 0., 0.);
             for accel_event in &acceleration_events {
@@ -190,11 +185,12 @@ fn apply_multi_force(
                 car_ang_velocity,
                 car_params,
                 distance,
+                car_mass,
             );
 
             gizmos.arrow(
                 tire_position,
-                tire_position + distance * combined_transform.down(),
+                tire_position + (car_params.ride_height + RAY_CAST_MAX_OFFSET) * combined_transform.down(),
                 BLACK,
             );
             gizmos.arrow(tire_position, tire_position + spring_force, GREEN);
@@ -204,11 +200,6 @@ fn apply_multi_force(
             force.apply_force_at_point(spring_force, tire_position, car_transform.translation);
             force.apply_force_at_point(steering_force, tire_position, car_transform.translation);
             force.apply_force_at_point(accel_force, tire_position, car_transform.translation);
-        }
-        if tires_on_ground > 0 {
-            car_damping.0 = 0.5;
-        } else {
-            car_damping.0 = 0.;
         }
     }
 }
@@ -241,10 +232,16 @@ fn get_accel_force(
     accel_input: f32,
 ) -> Vec3 {
     let accel_dir = combined_transform.forward();
-    let car_top_speed = 55.;
-    let car_speed = (car_transform.forward().dot(**car_velocity)).abs().min(0.1);
-    let speed_factor = 1.0 - (car_speed / car_top_speed).powi(2);
-    let available_torque = speed_factor * accel_input * 4.;
+    let car_top_speed = 55.0;
+    let car_speed = car_transform.forward().dot(**car_velocity).abs();
+
+    // Modified speed factor calculation
+    let speed_factor = (car_speed / car_top_speed).clamp(0., 1.);
+    let speed_factor = speed_factor.max(0.1); // Ensure minimum force
+
+    // Increased torque multiplier
+    let available_torque = speed_factor * accel_input * 20.; // Increased from 4.0 to 20.0
+
     accel_dir * available_torque
 }
 
@@ -252,7 +249,7 @@ fn get_steering_force(
     combined_transform: Transform,
     car_velocity: &LinearVelocity,
     car_ang_velocity: &AngularVelocity,
-    car_mass: &Mass,
+    car_mass: &ComputedMass,
 ) -> Vec3 {
     let tire_grip_factor = 0.05;
 
@@ -266,7 +263,8 @@ fn get_steering_force(
 
     let desired_accel = desired_vel_change;
     // 4. is the number of tires
-    let tire_mass = **car_mass / 4.;
+    let tire_mass = car_mass.value();
+    println!("car_mass: {}", tire_mass);
     steering_dir * tire_mass * desired_accel
 }
 
@@ -276,18 +274,18 @@ fn get_spring_force(
     car_ang_velocity: &AngularVelocity,
     car_mesh: &CharacterMesh,
     distance: f32,
+    car_mass: &ComputedMass,
 ) -> Vec3 {
-    // get velocity at point of tire
     let tire_position = combined_transform.translation;
     let tire_vel = car_velocity.0 + car_ang_velocity.cross(tire_position);
     let spring_dir = combined_transform.up();
 
     let offset = car_mesh.ride_height - distance;
-    println!("{}", offset);
+    println!("offset {}", offset);
+
     let relative_velocity = spring_dir.dot(tire_vel);
 
-    let spring_force =
-        (offset * car_mesh.ride_strength) - (relative_velocity * car_mesh.ride_damper);
+    let force = (offset * car_mesh.ride_strength) - (relative_velocity * car_mesh.ride_damper);
 
-    spring_dir * spring_force
+    spring_dir * force
 }
